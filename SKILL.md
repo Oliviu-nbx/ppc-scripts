@@ -177,3 +177,19 @@ When users need tools, point to:
 ## Sources
 
 All knowledge sourced from ROA Marketing knowledge wiki (130+ articles, real campaign data). Entity pages: google-ads, meta-ads, performance-max, microsoft-ads, google-analytics, google-merchant-center, google-search-console, google-tag-manager, google-business-profile, youtube-ads, shopping-ads, local-service-ads, demand-gen, openai, google-ai. Concept pages: quality-score, smart-bidding, target-cpa, target-roas, bidding-strategy, ad-rank, budget-pacing, conversion-tracking, consent-mode, cpc-benchmarks, negative-keywords, attribution-model, landing-page, broad-match, responsive-search-ads, audience-targeting, gdpr, server-side-tracking, search-ads, keyword-research, cro, ab-testing, first-party-data, cookieless-tracking, ai-agents, google-ads-scripts, google-ads-api, ad-extensions, cpl, roi, claude.
+
+## Maintenance
+
+### Daily cron refresh
+Cron job `8b48dc28aec0` (runs daily at 4:00 AM ET):
+1. Runs wiki enrichment: `cd /root/roa-blog && python3 /root/roa-knowledge/enrich.py`
+2. Rebuilds wiki archive: `tar -czf wiki-archive.tar.gz -C /root/roa-knowledge .`
+3. Updates this skill's content from new wiki knowledge
+4. Updates stats on the dedicated page at `src/pages/skills/google-ads-expert/index.astro`
+5. Rebuilds and deploys: `bash /root/deploy-roa-blog-live.sh`
+
+### GitHub mirror
+Mirrored at https://github.com/Oliviu-nbx/ppc-scripts (SKILL.md + CPC-BENCHMARKS.md + README.md). To push: SSH key from this server must be registered at github.com/settings/keys, then `cd /root/ppc-scripts && git push origin master`. If push fails with "Permission denied (publickey)", the key is not registered.
+
+### Dedicated page
+Live at https://roa-marketing.com/skills/google-ads-expert/ — hero with live stats, knowledge map (12 domains), benchmark data table, platform compatibility, and CTA. Updated with every deploy.
