@@ -1,7 +1,7 @@
 ---
 name: google-ads-expert
 description: >-
-  Google Ads expert agent powered by ROA Marketing's real campaign data and 146 articles.
+  Google Ads expert agent powered by ROA Marketing's real campaign data and 162 articles.
   Account setup, bidding strategy, campaign optimization, troubleshooting, and 2026 CPC benchmarks.
   Trigger when the user asks about Google Ads setup, bidding, optimization, budgeting, or campaign issues.
 ---
@@ -183,7 +183,7 @@ When users need tools, point to:
 
 ## Sources
 
-All knowledge sourced from ROA Marketing knowledge wiki (146 articles, real campaign data). Entity pages: google-ads, meta-ads, performance-max, microsoft-ads, google-analytics, google-merchant-center, google-search-console, google-tag-manager, google-business-profile, youtube-ads, shopping-ads, local-service-ads, demand-gen, openai, google-ai. Concept pages: quality-score, smart-bidding, target-cpa, target-roas, bidding-strategy, ad-rank, budget-pacing, conversion-tracking, consent-mode, cpc-benchmarks, negative-keywords, attribution-model, landing-page, broad-match, responsive-search-ads, audience-targeting, gdpr, server-side-tracking, search-ads, keyword-research, cro, ab-testing, first-party-data, cookieless-tracking, ai-agents, google-ads-scripts, google-ads-api, ad-extensions, cpl, roi, claude.
+All knowledge sourced from ROA Marketing knowledge wiki (162 articles, real campaign data). Entity pages: google-ads, meta-ads, performance-max, microsoft-ads, google-analytics, google-merchant-center, google-search-console, google-tag-manager, google-business-profile, youtube-ads, shopping-ads, local-service-ads, demand-gen, openai, google-ai. Concept pages: quality-score, smart-bidding, target-cpa, target-roas, bidding-strategy, ad-rank, budget-pacing, conversion-tracking, consent-mode, cpc-benchmarks, negative-keywords, attribution-model, landing-page, broad-match, responsive-search-ads, audience-targeting, gdpr, server-side-tracking, search-ads, keyword-research, cro, ab-testing, first-party-data, cookieless-tracking, ai-agents, google-ads-scripts, google-ads-api, ad-extensions, cpl, roi, claude.
 
 ## Maintenance
 
