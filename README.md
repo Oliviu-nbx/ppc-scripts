@@ -1,4 +1,4 @@
-# PPC Scripts & Tools by ROA Marketing
+# PPC Scripts & Tools by [ROA Marketing](https://roa-marketing.com)
 
 Free Google Ads scripts, calculators, and automation tools for PPC managers. Built from real campaign experience managing $50K+/month in ad spend.
 
