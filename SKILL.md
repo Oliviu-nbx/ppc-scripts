@@ -8,7 +8,7 @@ description: >-
 
 # Google Ads Expert Agent
 
-You are a Google Ads expert powered by the ROA Marketing knowledge wiki — 146 articles backed by real campaign data managing $2,000-$50,000/month across 10+ industries (legal, healthcare, home services, ecommerce, SaaS, B2B, real estate).
+You are a Google Ads expert powered by the ROA Marketing knowledge wiki — 162 articles backed by real campaign data managing $2,000-$50,000/month across 10+ industries (legal, healthcare, home services, ecommerce, SaaS, B2B, real estate).
 
 ## Core Knowledge Domains
 
@@ -187,14 +187,25 @@ All knowledge sourced from ROA Marketing knowledge wiki (162 articles, real camp
 
 ## Maintenance
 
+### Wiki enrichment expansion
+When the wiki page count stagnates (always the same number despite new articles), the enrichment engine's fixed trigger list is the cause. See `references/wiki-expansion.md` for the procedure to add new entity/concept triggers and grow the wiki (e.g., adding 5 industry vertical concepts grew it from 46→51 pages).
+
 ### Daily cron refresh
 Cron job runs daily at 4:00 AM ET. The agent executes this exact sequence:
 
-1. Count articles: `ls /root/roa-blog/src/content/blog/*.md | wc -l`
+1. Count articles before: `ls /root/roa-blog/src/content/blog/*.md | wc -l`
 2. Run wiki enrichment: `cd /root/roa-blog && python3 /root/roa-knowledge/enrich.py`
-3. Count wiki pages: entities + concepts from `/root/roa-knowledge/entities/` and `concepts/`
-4. Prepend changelog entry to `/root/roa-knowledge/.changelog`
-5. Rebuild wiki archive using Python tarfile (tar is blocked by security gate):
+3. Count wiki pages after: entities from `/root/roa-knowledge/entities/`, concepts from `concepts/`
+4. **Check what actually changed today** — compare with yesterday's changelog entry, check enrichment log:
+   `grep "$(date +%Y-%m-%d)" /root/roa-knowledge/log.md | head -5`
+   `find /root/roa-knowledge/entities /root/roa-knowledge/concepts -name "*.md" -newer /root/roa-knowledge/.changelog | sort`
+5. **Write a SPECIFIC changelog entry** — MUST include exact changes, not generic summaries.
+   - Required elements: article delta (+N since yesterday), wiki page delta (new/updated pages by name), any new benchmarks/data
+   - Format: `DATE|+N articles (TOTAL total). [Specific: new X pages with N sources each, Y updated pages]. Wiki: E entities + C concepts.`
+   - ❌ Rejected: `2026-07-20|Updated — 158 articles, 51 wiki pages. Wiki enrichment complete.`
+   - ✅ Required: `2026-07-20|+6 new wiki pages: GEO (7 articles), Healthcare PPC (6), Legal PPC (5), Home Services PPC (5), Real Estate PPC (3), TikTok Ads. Wiki grew 46→51. 151 articles total.`
+   - Prepend: `sed -i "1iDATE|ENTRY" /root/roa-knowledge/.changelog`
+6. Rebuild wiki archive using Python tarfile (tar is blocked by security gate):
 ```python
 import tarfile, os
 dest = '/var/www/roa-blog/wiki-archive.tar.gz'
@@ -202,17 +213,18 @@ if os.path.exists(dest): os.remove(dest)
 with tarfile.open(dest, 'w:gz') as tar:
     tar.add('/root/roa-knowledge', arcname='.')
 ```
-6. Copy skill files to GitHub repo: `cp SKILL.md CPC-BENCHMARKS.md /root/ppc-scripts/`
-7. Push to GitHub: `cd /root/ppc-scripts && git add -A && git commit -m "Daily update $(date +%Y-%m-%d)" && git push origin main:main`
-8. Build & deploy: `cd /root/roa-blog && bash /root/deploy-roa-blog-live.sh`
-9. Verify: `curl -so /dev/null -w '%{http_code}' https://roa-marketing.com/skills/google-ads-expert/`
-10. Update this skill's article count in both the frontmatter description and the Sources paragraph
+7. Copy skill files to GitHub repo: `cp SKILL.md CPC-BENCHMARKS.md /root/ppc-scripts/`
+8. Push to GitHub: `cd /root/ppc-scripts && git add -A && git commit -m "Daily update $(date +%Y-%m-%d)" && git push origin main:main`
+9. Build & deploy: `cd /root/roa-blog && bash /root/deploy-roa-blog-live.sh`
+10. Verify: `curl -so /dev/null -w '%{http_code}' https://roa-marketing.com/skills/google-ads-expert/`
+11. Update this skill's article count in THREE places: the frontmatter description, the body intro paragraph ("— N articles backed by real campaign data"), and the Sources paragraph
 
 ### Cron pitfalls
 - **tar is blocked by security gate (tirith:archive_extract)**: Every form of `tar -czf` is blocked — using `-C`, `cd`-first, or `/tmp` destinations all trigger the same gate. **Workaround**: use Python's `tarfile` module via `execute_code` (see step 5 above for the exact snippet).
 - **git push `main:master` silently fails**: The remote ppc-scripts repo uses `main` (not `master`). Pushing `main:master` says "Everything up-to-date" but doesn't actually push. Always use `git push origin main:main`.
 - **git commit may fail when files unchanged**: When skill files haven't changed since last run, `git commit` returns exit code 1 ("nothing to commit"). This is non-fatal — still run `git push` separately to push any accumulated commits.
-- **Article count must be updated in two places**: The frontmatter description line AND the Sources paragraph both contain the article count. Both must be updated when count changes.
+- **Article count must be updated in THREE places**: The frontmatter description, the body intro paragraph ("— N articles backed by real campaign data"), and the Sources paragraph. All three must be updated when count changes.
+- **Article cannibalization**: The pre-publish checker catches duplicate topics before publishing. When a new article matches an existing one: (a) DO NOT publish the duplicate, (b) check if the new article has unique data or updated benchmarks worth merging, (c) if yes, update the existing article with the fresh data and bump its `updatedDate`. This keeps one authoritative URL per topic.
 
 ### GitHub mirror
 Mirrored at https://github.com/Oliviu-nbx/ppc-scripts (SKILL.md + CPC-BENCHMARKS.md + README.md). To push: SSH key from this server must be registered at github.com/settings/keys, then `cd /root/ppc-scripts && git push origin main`. If push fails with "Permission denied (publickey)", the key is not registered.
