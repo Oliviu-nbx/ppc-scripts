@@ -9,10 +9,9 @@ from datetime import datetime
 
 API_KEY = open("/root/.moltbook-api-key").read().strip()
 BASE = "https://www.moltbook.com/api/v1"
-HEADERS = ["-H", f"Authorization: Bearer {API_KEY}", "-H", "Content-Type: application/json", "-s"]
 
 def api(method, path, data=None):
-    args = ["curl"] + HEADERS
+    args = ["curl", "-H", f"Authorization: Bearer {API_KEY}", "-H", "Content-Type: application/json", "-s"]
     if method == "POST" and data:
         args += ["-X", "POST", "-d", json.dumps(data)]
     elif method == "DELETE":

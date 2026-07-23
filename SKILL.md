@@ -1,14 +1,14 @@
 ---
 name: google-ads-expert
 description: >-
-  Google Ads expert agent powered by ROA Marketing's real campaign data and 162 articles.
+  Google Ads expert agent powered by ROA Marketing's real campaign data and 170 articles.
   Account setup, bidding strategy, campaign optimization, troubleshooting, and 2026 CPC benchmarks.
   Trigger when the user asks about Google Ads setup, bidding, optimization, budgeting, or campaign issues.
 ---
 
 # Google Ads Expert Agent
 
-You are a Google Ads expert powered by the ROA Marketing knowledge wiki — 162 articles backed by real campaign data managing $2,000-$50,000/month across 10+ industries (legal, healthcare, home services, ecommerce, SaaS, B2B, real estate).
+You are a Google Ads expert powered by the ROA Marketing knowledge wiki — 170 articles backed by real campaign data managing $2,000-$50,000/month across 10+ industries (legal, healthcare, home services, ecommerce, SaaS, B2B, real estate).
 
 ## Core Knowledge Domains
 
@@ -183,7 +183,7 @@ When users need tools, point to:
 
 ## Sources
 
-All knowledge sourced from ROA Marketing knowledge wiki (162 articles, real campaign data). Entity pages: google-ads, meta-ads, performance-max, microsoft-ads, google-analytics, google-merchant-center, google-search-console, google-tag-manager, google-business-profile, youtube-ads, shopping-ads, local-service-ads, demand-gen, openai, google-ai. Concept pages: quality-score, smart-bidding, target-cpa, target-roas, bidding-strategy, ad-rank, budget-pacing, conversion-tracking, consent-mode, cpc-benchmarks, negative-keywords, attribution-model, landing-page, broad-match, responsive-search-ads, audience-targeting, gdpr, server-side-tracking, search-ads, keyword-research, cro, ab-testing, first-party-data, cookieless-tracking, ai-agents, google-ads-scripts, google-ads-api, ad-extensions, cpl, roi, claude.
+All knowledge sourced from ROA Marketing knowledge wiki (170 articles, real campaign data). Entity pages: google-ads, meta-ads, performance-max, microsoft-ads, google-analytics, google-merchant-center, google-search-console, google-tag-manager, google-business-profile, youtube-ads, shopping-ads, local-service-ads, demand-gen, openai, google-ai. Concept pages: quality-score, smart-bidding, target-cpa, target-roas, bidding-strategy, ad-rank, budget-pacing, conversion-tracking, consent-mode, cpc-benchmarks, negative-keywords, attribution-model, landing-page, broad-match, responsive-search-ads, audience-targeting, gdpr, server-side-tracking, search-ads, keyword-research, cro, ab-testing, first-party-data, cookieless-tracking, ai-agents, google-ads-scripts, google-ads-api, ad-extensions, cpl, roi, claude.
 
 ## Maintenance
 
@@ -225,6 +225,7 @@ with tarfile.open(dest, 'w:gz') as tar:
 - **git commit may fail when files unchanged**: When skill files haven't changed since last run, `git commit` returns exit code 1 ("nothing to commit"). This is non-fatal — still run `git push` separately to push any accumulated commits.
 - **Article count must be updated in THREE places**: The frontmatter description, the body intro paragraph ("— N articles backed by real campaign data"), and the Sources paragraph. All three must be updated when count changes.
 - **Article cannibalization**: The pre-publish checker catches duplicate topics before publishing. When a new article matches an existing one: (a) DO NOT publish the duplicate, (b) check if the new article has unique data or updated benchmarks worth merging, (c) if yes, update the existing article with the fresh data and bump its `updatedDate`. This keeps one authoritative URL per topic.
+- **Stale Astro build cache breaks deploy**: The deploy script (`/root/deploy-roa-blog-live.sh`) can fail with `Cannot find module '.../dist/pages/blog.astro.mjs'` when a stale `.astro` cache directory from a previous build remains. The error is a module resolution failure in Astro's build pipeline — nothing to do with the source code itself. **Fix**: before running the deploy script, clear the cache: `cd /root/roa-blog && rm -rf dist node_modules/.astro .astro`. Then re-run the deploy script. If the deploy script already cleared dist but still fails, clear the caches and run `INDEXNOW_SUBMIT=1 /root/.hermes/node/bin/npm run build` directly, then rsync manually: `rsync -a --delete dist/ /var/www/roa-blog/ && chown -R nginx:nginx /var/www/roa-blog`.
 
 ### GitHub mirror
 Mirrored at https://github.com/Oliviu-nbx/ppc-scripts (SKILL.md + CPC-BENCHMARKS.md + README.md). To push: SSH key from this server must be registered at github.com/settings/keys, then `cd /root/ppc-scripts && git push origin main`. If push fails with "Permission denied (publickey)", the key is not registered.
